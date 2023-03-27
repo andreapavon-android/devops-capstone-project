@@ -209,3 +209,12 @@ class TestAccountService(TestCase):
         updated_account = response.get_json()
         # assert that the updated_account["name"] is whatever you changed it to
         self.assertEqual(updated_account["email"], "foo@email.it")
+
+
+    def test_method_not_allowed(self):
+        """It should not allow an illegal method call"""
+        # call self.client.delete() on the BASE_URL
+        response = self.client.delete(BASE_URL)
+        # assert that the resp.status_code is status.HTTP_405_METHOD_NOT_ALLOWED
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        
