@@ -110,7 +110,26 @@ def get_account(account_id):
 ######################################################################
 
 # ... place you code here to UPDATE an account ...
+@app.route("/accounts/<int:account_id>", methods=["PUT"])
+def update_accounts(account_id):
+    """
+    Update an Account
+    This endpoint will update an Account based on the posted data
+    """
+    app.logger.info("Request to update an Account with id: %s", account_id)
 
+    # use the Account.find() method to retrieve the account by the account_id
+    accounts = Account.find(account_id)
+    # abort() with a status.HTTP_404_NOT_FOUND if it cannot be found
+    if not accounts:
+        abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
+    
+    # call the deserialize() method on the account passing in request.get_json()
+    accounts.deserialize(request.get_json())
+    # call account.update() to update the account with the new data
+    accounts.update()
+    # return the serialize() version of the account with a return code of status.HTTP_200_OK
+    return accounts.serialize(), status.HTTP_200_OK
 
 ######################################################################
 # DELETE AN ACCOUNT
@@ -134,6 +153,9 @@ def delete_accounts(account_id):
         account.delete()
         # return and empty body ("") with a return code of status.HTTP_204_NO_CONTENT
         return "", status.HTTP_204_NO_CONTENT
+
+
+ 
 
 
 ######################################################################
