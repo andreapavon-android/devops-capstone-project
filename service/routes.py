@@ -95,8 +95,9 @@ def get_account(account_id):
     accounts = Account.find(account_id)
     # abort() with a status.HTTP_404_NOT_FOUND if it cannot be found
     if not accounts:
-        abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")# return the serialize() version of the account with a return code of status.HTTP_200_OK
+        abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
     
+    # return the serialize() version of the account with a return code of status.HTTP_200_OK
     return accounts.serialize(), status.HTTP_200_OK
     #list_accounts = [accounts.serialize() for account in accounts]
     # log the number of accounts being returned in the list 
@@ -116,6 +117,23 @@ def get_account(account_id):
 ######################################################################
 
 # ... place you code here to DELETE an account ...
+@app.route("/accounts/<int:account_id>", methods=["DELETE"])
+def delete_accounts(account_id):
+    """
+    Delete an Account
+    This endpoint will delete an Account based on the account_id that is requested
+    """
+    app.logger.info("Request to delete an Account with id: %s", account_id)
+
+    # use the Account.find() method to retrieve the account by the account_id
+    account = Account.find(account_id)
+    # if found, call the delete() method on the account
+    if not account:
+        abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
+    else:
+        account.delete()
+        # return and empty body ("") with a return code of status.HTTP_204_NO_CONTENT
+        return "", status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
