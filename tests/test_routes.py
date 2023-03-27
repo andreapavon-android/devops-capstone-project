@@ -132,5 +132,37 @@ class TestAccountService(TestCase):
         data = resp.get_json()
         self.assertEqual(len(data), 3)
 
+    def test_read_an_account(self):
+        """It should Read a single Account"""
+        account = self._create_accounts(1)[0]
+        # make a call to self.client.post() to create the account
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id}", content_type="application/json"
+        )
+        # assert that the resp.status_code is status.HTTP_200_OK
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # get the data from resp.get_json()
+        data = resp.get_json()
+        # assert that data["name"] equals the account.name
+        self.assertEqual(data["name"], account.name)
+        self.assertEqual(data["email"], account.email)
+        self.assertEqual(data["address"], account.address)
+        self.assertEqual(data["phone_number"], account.phone_number)
+        self.assertEqual(data["date_joined"], str(account.date_joined))
+
+    def test_account_not_found(self):
+        """It should not Read an Account that is not found"""
+        account = self._create_accounts(1)[0]
+        # make a call to self.client.post() to create the account
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id}", content_type="application/json"
+        )
+        # sad path: wrong id
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id+1}", content_type="application/json"
+        )
+        # assert that the resp.status_code is status.HTTP_404_NOT_FOUND
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
 
  
