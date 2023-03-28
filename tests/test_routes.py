@@ -164,7 +164,6 @@ class TestAccountService(TestCase):
         # assert that the resp.status_code is status.HTTP_404_NOT_FOUND
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-
     def test_delete_account(self):
         """It should Delete an Account"""
         account = self._create_accounts(1)[0]
@@ -172,13 +171,12 @@ class TestAccountService(TestCase):
         resp = self.client.delete(f"{BASE_URL}/{account.id}")
         # assert that the resp.status_code is status.HTTP_204_NO_CONTENT
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-        
+
         # sad path: wrong id
         resp = self.client.delete(f"{BASE_URL}/{account.id+1}")
         # assert that the resp.status_code is status.HTTP_404_NOT_FOUND
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
- 
     def test_update_account(self):
         """It should Update an existing Account"""
         # create an Account to update
@@ -192,12 +190,10 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # update the account
-        
         # get the data from resp.get_json() as new_account
         new_account = response.get_json()
         # change new_account["name"] to something known
         new_account["email"] = "foo@email.it"
-
         # send a self.client.put() request to the BASE_URL with a json payload of new_account
         response = self.client.put(
             f"{BASE_URL}/{new_account['id']}",
@@ -210,11 +206,9 @@ class TestAccountService(TestCase):
         # assert that the updated_account["name"] is whatever you changed it to
         self.assertEqual(updated_account["email"], "foo@email.it")
 
-
     def test_method_not_allowed(self):
         """It should not allow an illegal method call"""
         # call self.client.delete() on the BASE_URL
         response = self.client.delete(BASE_URL)
         # assert that the resp.status_code is status.HTTP_405_METHOD_NOT_ALLOWED
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        
